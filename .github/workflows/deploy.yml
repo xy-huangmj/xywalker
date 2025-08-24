@@ -1,0 +1,72 @@
+name: CI/CD Pipeline to Server
+
+on:
+  push:
+    branches:
+      - main # 当有新的代码推送到 main 分支时触发
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # 使用最新的Ubuntu运行器
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # 检出你的代码
+
+    - name: Set up SSH key for deployment
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        # 添加服务器的SSH指纹到known_hosts，防止第一次连接时的安全提示
+        # 这里的 SSH_HOST 必须是你的服务器IP地址或域名
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      env:
+        SSH_HOST: 172.178.175.206 # 直接使用IP地址，或者如果你想用一个 Secret，也可以设置为 ${{ secrets.SSH_HOST }}
+
+    - name: Transfer files to remote server
+      # 使用 rsync 安全地传输文件到远程服务器的非root用户家目录下的临时文件夹
+      run: |
+        # 创建远程临时目录，确保SSH_USERNAME有写入权限
+        ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ~/lottery-app-temp"
+        # 传输文件，排除不需要的文件和目录
+        rsync -avz --exclude '.git' --exclude '.github' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/lottery-app-temp/
+      env:
+        SSH_HOST: 172.178.175.206 # 直接使用IP地址
+
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@v1.0.3 # 使用 appleboy/ssh-action 来执行远程命令
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo "Navigating to temporary application directory on remote server..."
+          cd ~/lottery-app-temp
+
+          echo "Moving files to /opt/lottery-app (requires sudo)..."
+          sudo mkdir -p /opt/lottery-app # 确保目标部署目录存在
+          sudo rm -rf /opt/lottery-app/* # 清理旧文件
+          sudo mv * /opt/lottery-app/    # 移动新文件
+          
+          echo "Cleaning up temporary directory..."
+          rm -rf ~/lottery-app-temp
+
+          echo "Changing to deployment directory..."
+          cd /opt/lottery-app
+
+          echo "Stopping and removing existing Docker container (if any)..."
+          # 使用 sudo 执行 docker 命令
+          sudo docker stop lottery-app || true
+          sudo docker rm lottery-app || true
+
+          echo "Removing old Docker image (if any)..."
+          sudo docker rmi lottery-app || true
+
+          echo "Building new Docker image..."
+          sudo docker build -t lottery-app .
+
+          echo "Running new Docker container..."
+          sudo docker run -d -p 8080:8080 --name lottery-app lottery-app
+
+          echo "Deployment complete!"
