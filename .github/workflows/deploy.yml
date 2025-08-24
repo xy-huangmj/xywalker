@@ -13,33 +13,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4 # 检出你的代码
 
-    - name: Set up SSH key for deployment
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        # 添加服务器的SSH指纹到known_hosts，防止第一次连接时的安全提示
-        # 这里的 SSH_HOST 必须是你的服务器IP地址或域名
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      env:
-        SSH_HOST: 172.178.175.206 # 直接使用IP地址，或者如果你想用一个 Secret，也可以设置为 ${{ secrets.SSH_HOST }}
-
     - name: Transfer files to remote server
       # 使用 rsync 安全地传输文件到远程服务器的非root用户家目录下的临时文件夹
-      run: |
-        # 创建远程临时目录，确保SSH_USERNAME有写入权限
-        ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ~/lottery-app-temp"
-        # 传输文件，排除不需要的文件和目录
-        rsync -avz --exclude '.git' --exclude '.github' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/lottery-app-temp/
-      env:
-        SSH_HOST: 172.178.175.206 # 直接使用IP地址
+      # 注意：rsync 默认不直接支持密码认证，但 appleboy/scp-action 可以包装它。
+      # 对于文件传输，我们仍然会依赖 appleboy/ssh-action 的能力来执行远程命令
+      # 或者使用 appleboy/scp-action 来传输，它支持密码
+      uses: appleboy/scp-action@v0.1.7 # 使用 appleboy/scp-action 来传输文件
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }} # 使用密码
+        port: 22 # 默认SSH端口
+        source: "./" # 传输当前目录的所有文件
+        target: "~/lottery-app-temp" # 目标目录，会在用户家目录下创建
+        # 排除不需要的文件和目录
+        strip_components: 0 # 不剥离路径组件
+        rm: true # 每次传输前删除目标文件夹内容，确保干净
 
     - name: Deploy to Server
       uses: appleboy/ssh-action@v1.0.3 # 使用 appleboy/ssh-action 来执行远程命令
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }} # 使用密码
         script: |
           echo "Navigating to temporary application directory on remote server..."
           cd ~/lottery-app-temp
