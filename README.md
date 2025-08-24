@@ -18,7 +18,7 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-## How to Use Dockerfile
+## How to Use Dockerfile 
 
 To build and run the Spring Boot Lottery Application using Docker, follow these steps:
 
