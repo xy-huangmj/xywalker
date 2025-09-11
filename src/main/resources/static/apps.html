@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应用中心 - 个人博客</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/apps.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/">我的博客</a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/blog.html" class="nav-link">博客中心</a>
+                <a href="/apps.html" class="nav-link active">应用中心</a>
+                <a href="/about.html" class="nav-link">关于我</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Apps Header -->
+    <section class="apps-header">
+        <div class="container">
+            <h1>应用中心</h1>
+            <p>展示我开发的各种在线工具和应用</p>
+            
+            <!-- Filter Controls -->
+            <div class="apps-controls">
+                <div class="category-tabs" id="category-tabs">
+                    <button class="category-tab active" data-category="">全部</button>
+                    <!-- Category tabs will be loaded dynamically -->
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" id="grid-view" title="网格视图">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" id="list-view" title="列表视图">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Apps -->
+    <section class="featured-apps-section" id="featured-section">
+        <div class="container">
+            <h2>精选应用</h2>
+            <div class="featured-apps-grid" id="featured-apps-grid">
+                <!-- Featured apps will be loaded here -->
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Apps -->
+    <section class="apps-section">
+        <div class="container">
+            <div class="apps-content">
+                <div class="apps-list" id="apps-list">
+                    <!-- Apps will be loaded here -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="apps-sidebar">
+                    <!-- Categories -->
+                    <div class="sidebar-widget">
+                        <h3>应用分类</h3>
+                        <div class="category-list" id="sidebar-category-list">
+                            <!-- Categories will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="sidebar-widget">
+                        <h3>统计信息</h3>
+                        <div class="stats-list">
+                            <div class="stat-item">
+                                <span class="stat-label">总应用数</span>
+                                <span class="stat-value" id="total-apps">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">精选应用</span>
+                                <span class="stat-value" id="featured-apps-count">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">应用分类</span>
+                                <span class="stat-value" id="categories-count">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technologies -->
+                    <div class="sidebar-widget">
+                        <h3>技术栈</h3>
+                        <div class="tech-list" id="tech-list">
+                            <span class="tech-item">Spring Boot</span>
+                            <span class="tech-item">Vue.js</span>
+                            <span class="tech-item">React</span>
+                            <span class="tech-item">Node.js</span>
+                            <span class="tech-item">JavaScript</span>
+                            <span class="tech-item">Java</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我</h3>
+                    <p>一个热爱技术、喜欢分享的开发者，专注于创造有价值的应用和内容。</p>
+                    <div class="social-links">
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" title="邮箱"><i class="fas fa-envelope"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <div class="footer-links">
+                        <a href="/blog.html">博客中心</a>
+                        <a href="/apps.html">应用中心</a>
+                        <a href="/about.html">关于我</a>
+                        <a href="/contact.html">联系方式</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>技术栈</h3>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Java</span>
+                        <span class="tech-tag">Spring Boot</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">Vue.js</span>
+                        <span class="tech-tag">MySQL</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 个人博客. 所有权利保留.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/apps.js"></script>
+</body>
+</html>
