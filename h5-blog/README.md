@@ -158,6 +158,31 @@ sudo systemctl reload nginx
 
 配置位于 `.github/workflows/deploy.yml`
 
+### 🔧 Nginx SPA 路由配置
+
+**重要：** 由于这是单页应用(SPA)，需要配置nginx来正确处理前端路由，否则会出现 `/app/blog/posts` 等路径的404错误。
+
+#### 快速配置（推荐）
+```bash
+# 自动配置nginx
+./setup-nginx.sh
+```
+
+#### 手动配置
+```bash
+# 复制配置文件
+sudo cp blog.nginx.conf /etc/nginx/sites-available/blog
+
+# 启用站点
+sudo ln -s /etc/nginx/sites-available/blog /etc/nginx/sites-enabled/blog
+
+# 测试并重启
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+详细配置说明请参考：[NGINX_SETUP.md](NGINX_SETUP.md)
+
 ## ⚙️ 配置
 
 ### Nginx 配置示例

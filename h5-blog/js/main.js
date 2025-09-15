@@ -285,7 +285,9 @@ function loadBlogPosts() {
     const blogGrid = document.getElementById('blog-grid');
     if (!blogGrid) return;
     
-    // Sample blog data
+    console.log('Loading blog posts...');
+    
+    // Sample blog data (static data for H5 project)
     const blogPosts = [
         {
             id: 1,
@@ -426,7 +428,9 @@ function loadProjects() {
     const projectsGrid = document.getElementById('projects-grid');
     if (!projectsGrid) return;
     
-    // Sample projects data
+    console.log('Loading projects...');
+    
+    // Sample projects data (static data for H5 project)
     const projects = [
         {
             id: 1,
