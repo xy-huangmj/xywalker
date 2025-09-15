@@ -1,0 +1,28 @@
+{
+  "name": "h5-personal-blog",
+  "version": "1.0.0",
+  "description": "A modern H5 personal blog website with CI/CD deployment",
+  "main": "index.html",
+  "scripts": {
+    "build": "npm run minify-css && npm run minify-js",
+    "minify-css": "cleancss -o css/styles.min.css css/styles.css",
+    "minify-js": "uglifyjs js/*.js -o js/bundle.min.js",
+    "dev": "live-server --port=3000",
+    "deploy": "rsync -av --delete ./ /root/dockerfiles/nginx/html/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "html5",
+    "css3",
+    "javascript",
+    "personal-blog",
+    "responsive-design"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.2",
+    "uglify-js": "^3.17.4",
+    "live-server": "^1.2.2"
+  }
+}
